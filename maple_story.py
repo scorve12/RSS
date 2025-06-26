@@ -31,10 +31,11 @@ class NoticeParser(HTMLParser):
             
         # 제목 링크
         if self.in_notice_row and tag == 'a' and 'href' in attrs_dict:
-            if '/News/Notice/Article' in attrs_dict['href']:
+            href = attrs_dict['href']
+            if href and '/News/Notice/Article' in href:
                 self.in_title = True
                 # URL에서 게시글 ID 추출
-                match = re.search(r'Oid=(\d+)', attrs_dict['href'])
+                match = re.search(r'Oid=(\d+)', href)
                 if match:
                     self.current_notice['id'] = match.group(1)
                     self.current_notice['url'] = f"https://maplestory.nexon.com{attrs_dict['href']}"
@@ -93,7 +94,7 @@ def send_server_status(webhook_url, status="started"):
         "footer": {
             "text": "메이플스토리 공지사항 알림봇"
         },
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now().isoformat()
     }
     
     data = {
@@ -105,9 +106,12 @@ def send_server_status(webhook_url, status="started"):
     request = urllib.request.Request(
         webhook_url,
         data=data_json,
-        headers={'Content-Type': 'application/json'}
+        headers={
+            'Content-Type': 'application/json',
+            'User-Agent': 'Mozilla/5.0'
+        }
     )
-    
+
     try:
         with urllib.request.urlopen(request) as response:
             if response.status == 204:
@@ -196,8 +200,6 @@ def save_sent_notices(sent_ids, filename='sent_notices.json'):
     with open(filename, 'w') as f:
         json.dump(list(sent_ids), f)
 
-# 전역 변수로 웹훅 URL 저장
-WEBHOOK_URL = None
 
 def cleanup():
     """프로그램 종료 시 실행될 정리 함수"""
@@ -215,9 +217,9 @@ def main():
     global WEBHOOK_URL
     
     # 환경 변수에서 설정 읽기
-    WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL')
+    WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL', 'https://discord.com/api/webhooks/1387762632261505034/bz8Q74eeKcrvUi39cdhQscQnjZVd83mLQkf3Z1Q7UQHAXOeqw2zPumlgzCtnZGyayy0n')
     CHECK_INTERVAL = int(os.environ.get('CHECK_INTERVAL', '300'))
-    
+    print("▶️ DISCORD_WEBHOOK_URL:", repr(WEBHOOK_URL))
     # 웹훅 URL 확인
     if not WEBHOOK_URL:
         print("=" * 60)
