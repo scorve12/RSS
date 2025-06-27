@@ -9,6 +9,10 @@ import os
 import sys
 import signal
 import atexit
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 
 class NoticeParser(HTMLParser):
     """HTML 파서 - 공지사항 목록 추출"""
