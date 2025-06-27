@@ -217,7 +217,7 @@ def main():
     global WEBHOOK_URL
     
     # 환경 변수에서 설정 읽기
-    WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+    WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
     CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '300'))
     print("▶️ DISCORD_WEBHOOK_URL:", repr(WEBHOOK_URL))
     # 웹훅 URL 확인
