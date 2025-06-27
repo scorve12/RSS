@@ -217,8 +217,8 @@ def main():
     global WEBHOOK_URL
     
     # 환경 변수에서 설정 읽기
-    WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL', 'https://discord.com/api/webhooks/1387762632261505034/bz8Q74eeKcrvUi39cdhQscQnjZVd83mLQkf3Z1Q7UQHAXOeqw2zPumlgzCtnZGyayy0n')
-    CHECK_INTERVAL = int(os.environ.get('CHECK_INTERVAL', '300'))
+    WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+    CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '300'))
     print("▶️ DISCORD_WEBHOOK_URL:", repr(WEBHOOK_URL))
     # 웹훅 URL 확인
     if not WEBHOOK_URL:
